@@ -12,7 +12,8 @@ const MenuItemSchema =
 })
 
 MenuItemSchema.virtual("url").get(() =>{
-    return `/menu/${this._id}`
+    return `/Menu/${this._id}`
 })
 
-module.exports = mongoose.model("MenuItem", MenuItemSchema)
+
+module.exports = mongoose.model("menuItem", MenuItemSchema)

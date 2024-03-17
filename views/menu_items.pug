@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    h1= title
+    if menu_items.length
+        ul
+            each menu_item in menu_items
+                li
+                    a(href=menu_item.imageUrl) #{menu_item.itemName}
+                    |  (#{menu_item.price})
+
+    else
+        p There are no books.

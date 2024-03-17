@@ -6,3 +6,23 @@ body {
 a {
   color: #00B7FF;
 }
+
+.google {
+  display: inline-block;
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #4285F4;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.google:hover {
+  background-color: #2B83EA;
+  color: white;
+}
