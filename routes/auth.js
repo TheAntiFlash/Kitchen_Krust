@@ -1,14 +1,32 @@
 const express = require("express")
-const {authenticate} = require("passport");
-const GoogleStrategy = require('passport-google-oidc');
+const passport = require("passport");
+const {loginUser, success, GoogleStrategy} = require("../controllers/auth_controller");
 
 const router = express.Router()
 
-router.get("/login", (req, res) => {
-    res.render("login", {title: "Login"})
-})
+passport.use(GoogleStrategy)
 
-router.get('/login/federated/google', authenticate('google'));
+router.get("/", success)
 
+router.get("/login", loginUser)
+
+
+router.get('/login/federated/google', passport.authenticate('google'));
+router.get('/oauth2/redirect/google', passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+}));
+
+passport.serializeUser(function(user, cb) {
+    process.nextTick(function() {
+        cb(null, { id: user.id, username: user.username, name: user.name });
+    });
+});
+
+passport.deserializeUser(function(user, cb) {
+    process.nextTick(function() {
+        return cb(null, user);
+    });
+});
 
 module.exports = router

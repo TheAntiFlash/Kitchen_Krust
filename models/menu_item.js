@@ -4,7 +4,6 @@ const Schema = mongoose.Schema
 
 const MenuItemSchema =
     new Schema({
-        //id: {type: String, required: true, },
         itemName: {type: String, required: true, maxLength: 100},
         description: {type: String, required: true, maxLength: 500},
         imageUrl: {type: String, required: true},

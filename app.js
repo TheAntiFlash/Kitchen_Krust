@@ -2,14 +2,13 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const passport = require("passport")
 const csrf = require('csurf');
+var passport = require('passport');
 const session = require('express-session');
-const GoogleStrategy = require('passport-google-oidc');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require("mongoose");
-
+const MongoDbStore = require('connect-mongodb-session')(session);
 const indexRouter = require('./routes/index');
 const menuRouter = require('./routes/menu_item');
 const authRouter = require('./routes/auth');
@@ -17,13 +16,20 @@ require('dotenv').config()
 
 const app = express();
 
-// Mongoose
+// Mongoose + MongoStore
 mongoose.set("strictQuery", false);
 const mongoDB = process.env.DB_CON
 main().catch((err) => console.log(err));
 async function main() {
   await mongoose.connect(mongoDB);
 }
+const store = new MongoDbStore({
+    uri: mongoDB,
+    collection: 'sessions'
+}, function(error) {
+    if(error)
+    {console.log(error)}
+})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,24 +43,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Passport + CSurf
-/*app.use(csrf());
+// Use the session middleware to store session data
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: store
+}));
 app.use(passport.authenticate('session'));
-app.use(function(req, res, next) {
-  var msgs = req.session.messages || [];
-  res.locals.messages = msgs;
-  res.locals.hasMessages = !! msgs.length;
-  req.session.messages = [];
-  next();
-});
-app.use(function(req, res, next) {
-  res.locals.csrfToken = req.csrfToken();
-  next();
-});*/
 
-app.use('/', indexRouter);
+//app.use('/', indexRouter);
 app.use('/menu', menuRouter);
-app.use('/auth', authRouter);
+app.use('/', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
