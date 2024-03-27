@@ -9,9 +9,10 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require("mongoose");
 const MongoDbStore = require('connect-mongodb-session')(session);
-const indexRouter = require('./routes/index');
 const menuRouter = require('./routes/menu_item');
 const authRouter = require('./routes/auth');
+const orderRouter = require('./routes/order')
+const order = require("./models/order");
 require('dotenv').config()
 
 const app = express();
@@ -55,6 +56,7 @@ app.use(passport.authenticate('session'));
 //app.use('/', indexRouter);
 app.use('/menu', menuRouter);
 app.use('/', authRouter);
+app.use('/orders', orderRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -2,12 +2,24 @@ extends layout
 
 block content
     h1= title
+    form(action="/logout" method="post")
+        button.logout(type="submit") Sign out
+
     if menu_items.length
-        ul
+
+        .cards-container
             each menu_item in menu_items
-                li
-                    a(href=menu_item.imageUrl) #{menu_item.itemName}
-                    |  (#{menu_item.price})
+                .card
+                    .card-image
+                        img(src=menu_item.imageUrl, alt=menu_item.itemName)
+                        span.card-title #{menu_item.itemName}
+                    .card-content
+                        p #{menu_item.description}
+                        p #{menu_item.options.first.name}: #{menu_item.options.first.price}
+                        p #{menu_item.options.second.name}: #{menu_item.options.second.price}
+
+
+
 
     else
-        p There are no books.
+        p There are no items.
